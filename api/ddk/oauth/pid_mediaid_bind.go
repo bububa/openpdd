@@ -7,10 +7,7 @@ import (
 
 // PidMediaIDBindRequest 批量绑定推广位的媒体id API Request
 type PidMediaIDBindRequest struct {
-	// MediaID 媒体id
-	MediaID uint64 `json:"media_id"`
-	// PidList 推广位列表，例如：["60005_612"]，最多支持同时传入1000个
-	PidList []string `json:"pid_list"`
+	ddk.PidMediaIDBindRequest
 }
 
 // GetType implement Request interface
@@ -22,8 +19,10 @@ func (r PidMediaIDBindRequest) GetType() string {
 func PidMediaIDBind(clt *core.SDKClient, mediaID uint64, pidList []string, accessToken string) (*ddk.PidMediaIDBindResult, error) {
 	var (
 		req = &PidMediaIDBindRequest{
-			MediaID: mediaID,
-			PidList: pidList,
+			PidMediaIDBindRequest: ddk.PidMediaIDBindRequest{
+				MediaID: mediaID,
+				PidList: pidList,
+			},
 		}
 		resp ddk.PidMediaIDBindResponse
 	)

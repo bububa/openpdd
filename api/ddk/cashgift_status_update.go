@@ -28,9 +28,9 @@ type CashgiftStatusUpdateResponse struct {
 }
 
 // CashgiftStatusUpdate 多多礼金状态更新
-func CashgiftStatusUpdate(clt *core.SDKClient, req *CashgiftStatusUpdateRequest, accessToken string) (uint64, error) {
+func CashgiftStatusUpdate(clt *core.SDKClient, req *CashgiftStatusUpdateRequest) (uint64, error) {
 	var resp CashgiftStatusUpdateResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(req, &resp, ""); err != nil {
 		return 0, err
 	}
 	return resp.Response.ID, nil

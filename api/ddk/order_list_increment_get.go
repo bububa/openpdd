@@ -40,9 +40,9 @@ type OrderListIncrementGetResponse struct {
 }
 
 // OrderListIncrementGet 最后更新时间段增量同步推广订单信息
-func OrderListIncrementGet(clt *core.SDKClient, req *OrderListIncrementGetRequest, accessToken string) (int, []Order, error) {
+func OrderListIncrementGet(clt *core.SDKClient, req *OrderListIncrementGetRequest) (int, []Order, error) {
 	var resp OrderListIncrementGetResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(req, &resp, ""); err != nil {
 		return 0, nil, err
 	}
 	return resp.Response.TotalCount, resp.Response.List, nil

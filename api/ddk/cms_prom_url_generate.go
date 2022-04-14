@@ -45,9 +45,9 @@ type CmsPromUrlGenerateResponse struct {
 }
 
 // CmsPromUrlGenerate 生成商城-频道推广链接
-func CmsPromUrlGenerate(clt *core.SDKClient, req *CmsPromUrlGenerateRequest, accessToken string) (int, []PromURL, error) {
+func CmsPromUrlGenerate(clt *core.SDKClient, req *CmsPromUrlGenerateRequest) (int, []PromURL, error) {
 	var resp CmsPromUrlGenerateResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(req, &resp, ""); err != nil {
 		return 0, nil, err
 	}
 	return resp.Response.Total, resp.Response.URLList, nil

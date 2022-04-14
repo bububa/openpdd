@@ -37,7 +37,7 @@ type PidMediaIDBindResult struct {
 }
 
 // PidMediaIDBind 批量绑定推广位的媒体id
-func PidMediaIDBind(clt *core.SDKClient, mediaID uint64, pidList []string, accessToken string) (*PidMediaIDBindResult, error) {
+func PidMediaIDBind(clt *core.SDKClient, mediaID uint64, pidList []string) (*PidMediaIDBindResult, error) {
 	var (
 		req = &PidMediaIDBindRequest{
 			MediaID: mediaID,
@@ -45,7 +45,7 @@ func PidMediaIDBind(clt *core.SDKClient, mediaID uint64, pidList []string, acces
 		}
 		resp PidMediaIDBindResponse
 	)
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response.Result, nil

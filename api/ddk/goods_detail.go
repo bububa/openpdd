@@ -38,9 +38,9 @@ type GoodsDetailResponse struct {
 }
 
 // GoodsDetail 多多进宝商品详情查询
-func GoodsDetail(clt *core.SDKClient, req *GoodsDetailRequest, accessToken string) ([]Goods, error) {
+func GoodsDetail(clt *core.SDKClient, req *GoodsDetailRequest) ([]Goods, error) {
 	var resp GoodsDetailResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response.List, nil

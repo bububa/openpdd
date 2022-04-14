@@ -73,9 +73,9 @@ type GoodsSearchResult struct {
 }
 
 // GoodsSearch 多多进宝商品查询
-func GoodsSearch(clt *core.SDKClient, req *GoodsSearchRequest, accessToken string) (*GoodsSearchResult, error) {
+func GoodsSearch(clt *core.SDKClient, req *GoodsSearchRequest) (*GoodsSearchResult, error) {
 	var resp GoodsSearchResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response, nil

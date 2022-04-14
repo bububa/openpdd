@@ -7,10 +7,7 @@ import (
 
 // CashgiftStatusUpdateRequest 多多礼金状态更新 API Request
 type CashgiftStatusUpdateRequest struct {
-	// ID 多多礼金ID
-	ID uint64 `json:"cash_gift_id"`
-	// UpdateType 礼金更新类型：0-停止礼金推广，1-恢复礼金推广
-	UpdateType int `json:"update_type"`
+	ddk.CashgiftStatusUpdateRequest
 }
 
 // GetType implement Request interface
