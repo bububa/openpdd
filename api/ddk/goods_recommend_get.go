@@ -53,9 +53,9 @@ type GoodsRecommendGetResult struct {
 }
 
 // GoodsRecommendGet 多多进宝商品推荐API
-func GoodsRecommendGet(clt *core.SDKClient, req *GoodsRecommendGetRequest, accessToken string) (*GoodsRecommendGetResult, error) {
+func GoodsRecommendGet(clt *core.SDKClient, req *GoodsRecommendGetRequest) (*GoodsRecommendGetResult, error) {
 	var resp GoodsRecommendGetResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response, nil

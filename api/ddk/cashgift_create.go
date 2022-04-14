@@ -76,9 +76,9 @@ type CashgiftCreateResult struct {
 }
 
 // CashgiftCreate 创建多多礼金
-func CashgiftCreate(clt *core.SDKClient, req *CashgiftCreateRequest, accessToken string) (*CashgiftCreateResult, error) {
+func CashgiftCreate(clt *core.SDKClient, req *CashgiftCreateRequest) (*CashgiftCreateResult, error) {
 	var resp CashgiftCreateResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response, nil

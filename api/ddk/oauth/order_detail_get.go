@@ -7,10 +7,7 @@ import (
 
 // OrderDetailGetRequest 查询订单详情 API Request
 type OrderDetailGetRequest struct {
-	// OrderSN 订单号
-	OrderSN string `json:"order_sn,omitempty"`
-	// QueryOrderType 订单类型：1-推广订单；2-直播间订单
-	QueryOrderType int `json:"query_order_type,omitempty"`
+	ddk.OrderDetailGetRequest
 }
 
 // GetType implement Request interface

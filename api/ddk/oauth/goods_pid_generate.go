@@ -7,12 +7,7 @@ import (
 
 // GoodsPidGenerateRequest 创建多多进宝推广位 API Request
 type GoodsPidGenerateRequest struct {
-	// Number 要生成的推广位数量，默认为10，范围为：1~100
-	Number int `json:"number"`
-	// PidNameList 推广位名称，例如["1","2"]
-	PidNameList []string `json:"p_id_name_list,omitempty"`
-	// MediaID 媒体id
-	MediaID uint64 `json:"media_id,omitempty"`
+	ddk.GoodsPidGenerateRequest
 }
 
 // GetType implement Request interface

@@ -28,9 +28,9 @@ type GoodsZsUnitUrlGenResponse struct {
 }
 
 // GoodsZsUnitUrlGen 多多进宝转链接口
-func GoodsZsUnitUrlGen(clt *core.SDKClient, req *GoodsZsUnitUrlGenRequest, accessToken string) (*PromURL, error) {
+func GoodsZsUnitUrlGen(clt *core.SDKClient, req *GoodsZsUnitUrlGenRequest) (*PromURL, error) {
 	var resp GoodsZsUnitUrlGenResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response, nil

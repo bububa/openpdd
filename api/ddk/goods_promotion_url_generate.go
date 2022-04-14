@@ -54,9 +54,9 @@ type GoodsPromotionUrlGenerateResponse struct {
 }
 
 // GoodsPromotionUrlGenerate 多多进宝推广链接生成
-func GoodsPromotionUrlGenerate(clt *core.SDKClient, req *GoodsPromotionUrlGenerateRequest, accessToken string) ([]PromURL, error) {
+func GoodsPromotionUrlGenerate(clt *core.SDKClient, req *GoodsPromotionUrlGenerateRequest) ([]PromURL, error) {
 	var resp GoodsPromotionUrlGenerateResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response.List, nil

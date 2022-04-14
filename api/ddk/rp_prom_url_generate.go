@@ -26,7 +26,7 @@ type RpPromUrlGenerateRequest struct {
 	// GenerateWeApp 是否生成拼多多福利券微信小程序推广信息
 	GenerateWeApp bool `json:"generate_we_app,omitempty"`
 	// PidList 推广位列表，长度最大为1，例如：["60005_612"]。活动页生链要求传入授权备案信息，不支持批量生链。
-	PidList []string `json:"pid_list,omitempty"`
+	PidList []string `json:"p_id_list,omitempty"`
 	// ScratchCardAmount 刮刮卡指定金额（单位分），可指定2-100元间数值，即有效区间为：[200,10000]
 	ScratchCardAmount int64 `json:"scratch_card_amount,omitempty"`
 }
@@ -71,9 +71,9 @@ type RpPromUrlGenerateResult struct {
 }
 
 // RpPromUrlGenerate 生成营销工具推广链接
-func RpPromUrlGenerate(clt *core.SDKClient, req *RpPromUrlGenerateRequest, accessToken string) (*RpPromUrlGenerateResult, error) {
+func RpPromUrlGenerate(clt *core.SDKClient, req *RpPromUrlGenerateRequest) (*RpPromUrlGenerateResult, error) {
 	var resp RpPromUrlGenerateResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response, nil

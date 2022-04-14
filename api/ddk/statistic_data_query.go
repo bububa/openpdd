@@ -56,9 +56,9 @@ type StatisticData struct {
 }
 
 // StatisticDataQuery 多多进宝数据统计查询接口
-func StatisticDataQuery(clt *core.SDKClient, req *StatisticDataQueryRequest, accessToken string) ([]StatisticData, error) {
+func StatisticDataQuery(clt *core.SDKClient, req *StatisticDataQueryRequest) ([]StatisticData, error) {
 	var resp StatisticDataQueryResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response.List, nil

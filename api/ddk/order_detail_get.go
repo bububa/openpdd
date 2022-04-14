@@ -25,9 +25,9 @@ type OrderDetailGetResponse struct {
 }
 
 // OrderDetailGet 查询订单详情
-func OrderDetailGet(clt *core.SDKClient, req *OrderDetailGetRequest, accessToken string) (*Order, error) {
+func OrderDetailGet(clt *core.SDKClient, req *OrderDetailGetRequest) (*Order, error) {
 	var resp OrderDetailGetResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response, nil

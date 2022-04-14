@@ -34,9 +34,9 @@ type GoodsPidQueryResponse struct {
 }
 
 // GoodsPidQuery 查询已经生成的推广位信息
-func GoodsPidQuery(clt *core.SDKClient, req *GoodsPidQueryRequest, accessToken string) (int, []Pid, error) {
+func GoodsPidQuery(clt *core.SDKClient, req *GoodsPidQueryRequest) (int, []Pid, error) {
 	var resp GoodsPidQueryResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(req, &resp, ""); err != nil {
 		return 0, nil, err
 	}
 	return resp.Response.TotalCount, resp.Response.List, nil

@@ -105,7 +105,7 @@ func valueString(v reflect.Value, opts tagOptions, sf reflect.StructField) strin
 		return t.Format(time.RFC3339)
 	}
 
-	if v.Kind() == reflect.Slice || v.Kind() == reflect.Array || v.Kind() == reflect.Struct {
+	if v.Kind() == reflect.Slice || v.Kind() == reflect.Array || v.Kind() == reflect.Map || v.Kind() == reflect.Struct {
 		if isEmptyValue(v) {
 			switch v.Kind() {
 			case reflect.Struct:
@@ -119,6 +119,8 @@ func valueString(v reflect.Value, opts tagOptions, sf reflect.StructField) strin
 		} else {
 			return string(b)
 		}
+	} else if v.Kind() == reflect.Interface {
+		return valueString(reflect.ValueOf(v.Interface()), opts, sf)
 	}
 
 	return fmt.Sprint(v.Interface())

@@ -29,9 +29,9 @@ type MemberAuthorityQueryResponse struct {
 }
 
 // MemberAuthorityQuery 查询是否绑定备案
-func MemberAuthorityQuery(clt *core.SDKClient, req *MemberAuthorityQueryRequest, accessToken string) (bool, error) {
+func MemberAuthorityQuery(clt *core.SDKClient, req *MemberAuthorityQueryRequest) (bool, error) {
 	var resp MemberAuthorityQueryResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(req, &resp, ""); err != nil {
 		return false, err
 	}
 	return resp.Response.Bind == 1, nil

@@ -31,9 +31,9 @@ type GoodsPidGenerateResponse struct {
 }
 
 // GoodsPidGenerate 创建多多进宝推广位
-func GoodsPidGenerate(clt *core.SDKClient, req *GoodsPidGenerateRequest, accessToken string) ([]Pid, error) {
+func GoodsPidGenerate(clt *core.SDKClient, req *GoodsPidGenerateRequest) ([]Pid, error) {
 	var resp GoodsPidGenerateResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response.List, nil
