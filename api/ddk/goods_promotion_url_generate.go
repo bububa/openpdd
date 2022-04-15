@@ -32,7 +32,7 @@ type GoodsPromotionUrlGenerateRequest struct {
 	// MultiGroup true--生成多人团推广链接 false--生成单人团推广链接（默认false）1、单人团推广链接：用户访问单人团推广链接，可直接购买商品无需拼团。2、多人团推广链接：用户访问双人团推广链接开团，若用户分享给他人参团，则开团者和参团者的佣金均结算给推手
 	MultiGroup bool `json:"multi_group,omitempty"`
 	// Pid 推广位ID
-	Pid string `json:"pid,omitempty"`
+	Pid string `json:"p_id,omitempty"`
 	// SearchID 搜索id，建议填写，提高收益。来自pdd.ddk.goods.recommend.get、pdd.ddk.goods.search、pdd.ddk.top.goods.list.query等接口
 	SearchID string `json:"search_id,omitempty"`
 	// ZsDouID 招商多多客ID
