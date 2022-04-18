@@ -27,6 +27,14 @@ func (e ErrorResponse) Error() string {
 	builder.WriteString(strconv.Itoa(e.ErrorCode))
 	builder.WriteString(", MSG:")
 	builder.WriteString(e.ErrorMsg)
+	if e.SubCode != "" {
+		builder.WriteString(", SUB_CODE:")
+		builder.WriteString(e.SubCode)
+	}
+	if e.SubMsg != "" {
+		builder.WriteString(", SUB_MSG:")
+		builder.WriteString(e.SubMsg)
+	}
 	return builder.String()
 }
 
