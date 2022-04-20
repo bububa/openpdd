@@ -19,8 +19,8 @@ type GoodsPromotionUrlGenerateRequest struct {
 	GenerateMallCollectCoupon bool `json:"generate_mall_collect_coupon,omitempty"`
 	// GenerateQQApp 是否生成qq小程序
 	GenerateQQApp bool `json:"generate_qq_app,omitempty"`
-	// GenerateSchemeURL 是否返回 schema URL
-	GenerateSchemeURL bool `json:"generate_scheme_url,omitempty"`
+	// GenerateSchemaURL 是否返回 schema URL
+	GenerateSchemaURL bool `json:"generate_schema_url,omitempty"`
 	// GenerateShortURL 是否生成短链接，true-是，false-否
 	GenerateShortURL bool `json:"generate_short_url,omitempty"`
 	// GenerateWeApp 是否生成拼多多福利券微信小程序推广信息
