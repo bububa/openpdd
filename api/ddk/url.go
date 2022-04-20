@@ -18,12 +18,16 @@ type PromURL struct {
 	ShortURL string `json:"short_url,omitempty" xml:"short_url,omitempty"`
 	// URL 普通推广长链接，唤起H5页面
 	URL string `json:"url,omitempty" xml:"url,omitempty"`
+	// WeAppWebViewURL
+	WeAppWebViewURL string `json:"we_app_web_view_url,omitempty" xml:"we_app_web_view_url,omitempty"`
+	// WeAppWebViewShortURL
+	WeAppWebViewShortURL string `json:"we_app_web_view_short_url,omitempty" xml:"we_app_web_view_short_url,omitempty"`
 	// Sign CPSsign
 	Sign string `json:"sign,omitempty" xml:"sign,omitempty"`
-	// SchemeURL schema链接，用户安装拼多多APP的情况下会唤起APP（需客户端支持schema跳转协议）
-	SchemeURL string `json:"scheme_url,omitempty" xml:"scheme_url,omitempty"`
-	// TzSchemeURL 使用此推广链接，用户安装多多团长APP的情况下会唤起APP（需客户端支持schema跳转协议）
-	TzSchemeURL string `json:"tz_scheme_url,omitempty" xml:"tz_shceme_url,omitempty"`
+	// SchemaURL schema链接，用户安装拼多多APP的情况下会唤起APP（需客户端支持schema跳转协议）
+	SchemURL string `json:"schema_url,omitempty" xml:"schema_url,omitempty"`
+	// TzSchemaURL 使用此推广链接，用户安装多多团长APP的情况下会唤起APP（需客户端支持schema跳转协议）
+	TzSchemaURL string `json:"tz_schema_url,omitempty" xml:"tz_shceme_url,omitempty"`
 	// MultiURLLIst 双人团链接列表
 	MultiURLList *PromURL `json:"multi_url_list,omitempty" xml:"multi_url_list,omitempty"`
 	// SingleURLList 单人团链接列表
