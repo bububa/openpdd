@@ -33,7 +33,7 @@ type GoodsDetailResponse struct {
 	model.CommonResponse
 	Response struct {
 		// List 多多进宝商品对象列表
-		List []Goods `json:"goods_list,omitempty" xml:"goods_list,omitempty"`
+		List []Goods `json:"goods_details,omitempty" xml:"goods_details,omitempty"`
 	} `json:"goods_detail_response" xml:"goods_detail_response"`
 }
 
