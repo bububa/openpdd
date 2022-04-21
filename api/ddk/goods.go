@@ -65,7 +65,7 @@ type Goods struct {
 	// MarketFee 市场服务费
 	MarketFee int64 `json:"market_fee,omitempty" xml:"market_fee,omitempty"`
 	// MerchantType 商家类型
-	MerchatType string `json:"merchant_type,omitempty" xml:"merchant_type,omitempty"`
+	MerchatType int `json:"merchant_type,omitempty" xml:"merchant_type,omitempty"`
 	// MinGroupPrice 最小成团价格，单位分
 	MinGroupPrice int64 `json:"min_group_price,omitempty" xml:"min_group_price,omitempty"`
 	// MinNormalPrice 最小单买价格，单位分
