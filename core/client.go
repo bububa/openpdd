@@ -1,9 +1,7 @@
 package core
 
 import (
-	"crypto/md5"
-	"encoding/hex"
-	"io"
+	"encoding/base64"
 	"net/http"
 	"net/url"
 	"sort"
@@ -13,6 +11,7 @@ import (
 
 	"github.com/bububa/openpdd/core/internal/debug"
 	"github.com/bububa/openpdd/model"
+	"github.com/bububa/openpdd/util"
 	"github.com/bububa/openpdd/util/query"
 )
 
@@ -141,11 +140,27 @@ func (c *SDKClient) sign(values url.Values) string {
 	}
 	builder.WriteString(c.secret)
 	rawSign := builder.String()
-	return strings.ToUpper(md5String(rawSign))
+	return strings.ToUpper(util.Md5String(rawSign))
 }
 
-func md5String(src string) string {
-	h := md5.New()
-	io.WriteString(h, src)
-	return hex.EncodeToString(h.Sum(nil))
+func (c *SDKClient) WSSUrl() string {
+	ts := strconv.FormatInt(time.Now().UnixMilli(), 10)
+	var builder strings.Builder
+	builder.WriteString(WSSEndPoint)
+	builder.WriteString("/")
+	builder.WriteString(c.clientID)
+	builder.WriteString("/")
+	builder.WriteString(ts)
+	builder.WriteString("/")
+	builder.WriteString(c.signWSS(ts))
+	return builder.String()
+
+}
+
+func (c *SDKClient) signWSS(ts string) string {
+	var builder strings.Builder
+	builder.WriteString(c.clientID)
+	builder.WriteString(ts)
+	builder.WriteString(c.secret)
+	return base64.StdEncoding.EncodeToString([]byte(util.Md5String(builder.String())))
 }

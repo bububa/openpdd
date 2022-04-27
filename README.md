@@ -51,4 +51,12 @@
   - 批量绑定推广位的媒体id [ PidMediaIDBind(clt *core.SDKClient, mediaID uint64, pidList []string, accessToken string) (*ddk.PidMediaIDBindResult, error) ]
   - 拼多多主站频道推广接口 [ ResourceUrlGen(clt *core.SDKClient, req *ResourceUrlGenRequest, accessToken string) (*ddk.PromURL, error) ]
   - 生成营销工具推广链接 [ RpPromUrlGenerate(clt *core.SDKClient, req *RpPromUrlGenerateRequest, accessToken string) (*ddk.RpPromUrlGenerateResult, error) ]
-
+- 商品API (api/goods)
+  - 商品标准类目接口 [ CatsGet(clt *core.SDKClient, parentID uint64) ([]Cat, error) ]
+  - 查询商品标签列表 [ OptGet(clt *core.SDKClient, parentID uint64) ([]Opt, error) ]
+- 消息服务API (api/pmc)
+  - 消息队列积压数量查询 [ AccureQuery(clt *core.SDKClient) (int64, error) ]
+  - 取消用户的消息服务 [ UserCancel(clt *core.SDKClient, ownerID string) (bool, error) ]
+  - 获取用户已开通消息 [ UserGet(clt *core.SDKClient, ownerID string) (*User, error) ]
+  - 为已授权的用户开通消息服务 [ UserPermit(clt *core.SDKClient, topics []string, accessToken string) (bool, error) ]
+  - 接收消息推送 [ Read(ctx context.Context, clt *core.SDKClient) <-chan []byte ]
