@@ -20,7 +20,7 @@ type OrderListIncrementGetRequest struct {
 	// ReturnCount 是否返回总数，默认为true，如果指定false, 则返回的结果中不包含总记录数，通过此种方式获取增量数据，效率在原有的基础上有80%的提升。
 	ReturnCount *bool `json:"return_count,omitempty"`
 	// StartUpdateTime 最近90天内多多进宝商品订单更新时间--查询时间开始。note：此时间为时间戳，指格林威治时间 1970 年01 月 01 日 00 时 00 分 00 秒(北京时间 1970 年 01 月 01 日 08 时 00 分 00 秒)起至现在的总秒数
-	StartUpdateTIme int64 `json:"start_update_time,omitempty"`
+	StartUpdateTime int64 `json:"start_update_time,omitempty"`
 }
 
 // GetType implement Request interface
