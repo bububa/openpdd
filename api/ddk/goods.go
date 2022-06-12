@@ -46,6 +46,8 @@ type Goods struct {
 	GoodsName string `json:"goods_name,omitempty" xml:"goods_name,omitempty"`
 	// GoodsRate 商品等级
 	GoodsRate int `json:"goods_rate,omitempty" xml:"goods_rate,omitempty"`
+	// GodsID 商品ID
+	GoodsID uint64 `json:"goods_id,omitempty" xml:"goods_id,omitempty"`
 	// GoodsSign 商品goodsSign，支持通过goodsSign查询商品。goodsSign是加密后的goodsId, goodsId已下线，请使用goodsSign来替代。使用说明：https://jinbao.pinduoduo.com/qa-system?questionId=252
 	GoodsSign string `json:"goods_sign,omitempty" xml:"goods_sign,omitempty"`
 	// GoodsThumbnailURL 商品缩略图
