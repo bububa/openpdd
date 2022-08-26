@@ -30,8 +30,8 @@ type PromURL struct {
 	TzSchemaURL string `json:"tz_schema_url,omitempty" xml:"tz_shceme_url,omitempty"`
 	// WeixinCode 微信小程序码
 	WeixinCode string `json:"weixin_code,omitempty" xml:"weixin_code,omitempty"`
-	// WexinShortLink 微信ShortLink链接
-	WexinShortLink string `json:"weixin_short_link,omitempty" xml:"weixin_short_link,omitempty"`
+	// WeixinShortLink 微信ShortLink链接
+	WeixinShortLink string `json:"weixin_short_link,omitempty" xml:"weixin_short_link,omitempty"`
 	// MultiURLLIst 双人团链接列表
 	MultiURLList *PromURL `json:"multi_url_list,omitempty" xml:"multi_url_list,omitempty"`
 	// SingleURLList 单人团链接列表
