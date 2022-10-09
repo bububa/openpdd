@@ -1,5 +1,7 @@
 package model
 
+import "io"
+
 // RequestDataType 请求返回的数据格式，可选参数为XML或JSON，默认为JSON
 type RequestDataType string
 
@@ -36,4 +38,21 @@ type CommonRequest struct {
 // GetType implement Request interface
 func (r CommonRequest) GetType() string {
 	return r.Type
+}
+
+// UploadField multipart/form-data post request field struct
+type UploadField struct {
+	// Key field key
+	Key string
+	// Value field value
+	Value string
+	// Reader upload file reader
+	Reader io.Reader
+}
+
+// UploadRequest multipart/form-data reqeust interface
+type UploadRequest interface {
+	// Encode encode request to UploadFields
+	Encode() []UploadField
+	GetType() string
 }

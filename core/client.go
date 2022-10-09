@@ -1,7 +1,11 @@
 package core
 
 import (
+	"bytes"
 	"encoding/base64"
+	"fmt"
+	"io"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 	"sort"
@@ -21,6 +25,7 @@ type SDKClient struct {
 	secret   string
 	dataType model.RequestDataType
 	gw       string
+	uploadGw string
 	debug    bool
 }
 
@@ -30,6 +35,7 @@ func NewSDKClient(clientID string, secret string) *SDKClient {
 		clientID: clientID,
 		secret:   secret,
 		gw:       GATEWAY,
+		uploadGw: UPLOAD_GATEWAY,
 		dataType: model.RequestDataType_JSON,
 	}
 }
@@ -42,6 +48,10 @@ func (c *SDKClient) SetDebug(debug bool) {
 // SetGateway 设置gateway
 func (c *SDKClient) SetGateway(gw string) {
 	c.gw = gw
+}
+
+func (c *SDKClient) SetUploadGateway(gw string) {
+	c.uploadGw = gw
 }
 
 // SetDataType 设置返回数据格式
@@ -68,6 +78,36 @@ func (c *SDKClient) Do(req model.Request, resp model.Response, accessToken strin
 	}
 	values.Set("sign", c.sign(values))
 	return c.get(values, resp)
+}
+
+func (c *SDKClient) Upload(req model.UploadRequest, resp model.Response, accessToken string) error {
+	fields := req.Encode()
+	fields = append(fields, []model.UploadField{
+		{
+			Key:   "type",
+			Value: req.GetType(),
+		}, {
+			Key:   "client_id",
+			Value: c.clientID,
+		}, {
+			Key:   "timestamp",
+			Value: strconv.FormatInt(time.Now().Unix(), 10),
+		}, {
+			Key:   "date_type",
+			Value: string(c.dataType),
+		},
+	}...)
+	if accessToken != "" {
+		fields = append(fields, model.UploadField{
+			Key:   "access_token",
+			Value: accessToken,
+		})
+	}
+	fields = append(fields, model.UploadField{
+		Key:   "sign",
+		Value: c.signUploadFields(fields),
+	})
+	return c.upload(fields, resp)
 }
 
 func (c *SDKClient) post(req url.Values, resp model.Response) error {
@@ -103,6 +143,50 @@ func (c *SDKClient) get(req url.Values, resp model.Response) error {
 	return c.fetch(httpReq, resp)
 }
 
+func (c *SDKClient) upload(req []model.UploadField, resp model.Response) error {
+	var buf bytes.Buffer
+	var builder strings.Builder
+	mw := multipart.NewWriter(&buf)
+	mp := make(map[string]string, len(req))
+	for _, f := range req {
+		var (
+			fw  io.Writer
+			r   io.Reader
+			err error
+		)
+		if f.Reader != nil {
+			if fw, err = mw.CreateFormFile(f.Key, f.Value); err != nil {
+				return err
+			}
+			r = f.Reader
+			builder.WriteString("@")
+			if f.Value == "" {
+				f.Value = "/tmp"
+			}
+			builder.WriteString(f.Value)
+			mp[f.Key] = builder.String()
+			builder.Reset()
+		} else {
+			if fw, err = mw.CreateFormField(f.Key); err != nil {
+				return err
+			}
+			r = strings.NewReader(f.Value)
+			mp[f.Key] = f.Value
+		}
+		if _, err = io.Copy(fw, r); err != nil {
+			return err
+		}
+	}
+	mw.Close()
+	debug.PrintPostMultipartRequest(c.uploadGw, mp, c.debug)
+	httpReq, err := http.NewRequest("POST", c.uploadGw, &buf)
+	if err != nil {
+		return err
+	}
+	httpReq.Header.Add("Content-Type", mw.FormDataContentType())
+	return c.fetch(httpReq, resp)
+}
+
 // fetch execute http request
 func (c *SDKClient) fetch(httpReq *http.Request, resp model.Response) error {
 	httpResp, err := http.DefaultClient.Do(httpReq)
@@ -126,20 +210,43 @@ func (c *SDKClient) fetch(httpReq *http.Request, resp model.Response) error {
 
 func (c *SDKClient) sign(values url.Values) string {
 	params := make([]string, 0, len(values))
+	var builder strings.Builder
 	for k := range values {
-		var builder strings.Builder
 		builder.WriteString(k)
 		builder.WriteString(values.Get(k))
 		params = append(params, builder.String())
+		builder.Reset()
 	}
 	sort.Strings(params)
-	var builder strings.Builder
 	builder.WriteString(c.secret)
 	for _, v := range params {
 		builder.WriteString(v)
 	}
 	builder.WriteString(c.secret)
 	rawSign := builder.String()
+	return strings.ToUpper(util.Md5String(rawSign))
+}
+
+func (c *SDKClient) signUploadFields(fields []model.UploadField) string {
+	params := make([]string, 0, len(fields))
+	var builder strings.Builder
+	for _, f := range fields {
+		if f.Reader != nil {
+			continue
+		}
+		builder.WriteString(f.Key)
+		builder.WriteString(f.Value)
+		params = append(params, builder.String())
+		builder.Reset()
+	}
+	sort.Strings(params)
+	builder.WriteString(c.secret)
+	for _, v := range params {
+		builder.WriteString(v)
+	}
+	builder.WriteString(c.secret)
+	rawSign := builder.String()
+	fmt.Println(rawSign)
 	return strings.ToUpper(util.Md5String(rawSign))
 }
 

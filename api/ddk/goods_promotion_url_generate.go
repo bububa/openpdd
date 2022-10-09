@@ -23,6 +23,8 @@ type GoodsPromotionUrlGenerateRequest struct {
 	GenerateSchemaURL bool `json:"generate_schema_url,omitempty"`
 	// GenerateShortURL 是否生成短链接，true-是，false-否
 	GenerateShortURL bool `json:"generate_short_url,omitempty"`
+	// GenerateShortLink 获取微信ShortLink链接，仅支持单个商品
+	GenerateShortLink bool `json:"generate_short_link,omitempty"`
 	// GenerateWeApp 是否生成拼多多福利券微信小程序推广信息
 	GenerateWeApp bool `json:"generate_we_app,omitempty"`
 	// GoodsSignList 商品goodsSign列表，例如：["c9r2omogKFFAc7WBwvbZU1ikIb16_J3CTa8HNN"]，支持批量生链。goodsSign是加密后的goodsId, goodsId已下线，请使用goodsSign来替代。使用说明：https://jinbao.pinduoduo.com/qa-system?questionId=252

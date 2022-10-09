@@ -17,6 +17,7 @@
   - 刷新Access Token [ TokenRefresh(clt *core.SDKClient, refreshToken string) (*Token, error) ]
 - 多多客(api/ddk)
   - 创建多多进宝推广位 [ GoodsPidGenerate(clt *core.SDKClient, req *GoodsPidGenerateRequest) ([]Pid, error) ]
+  - 多多客生成单品推广小程序二维码url [ WeappQrcodeUrlGen(clt *core.SDKClient, req *WeappQrcodeUrlGenRequest) (string, error) ]
   - 多多礼金状态更新 [ CashgiftStatusUpdate(clt *core.SDKClient, req *CashgiftStatusUpdateRequest) (uint64, error) ]
   - 查询已经生成的推广位信息 [ GoodsPidQuery(clt *core.SDKClient, req *GoodsPidQueryRequest) (int, []Pid, error) ]
   - 批量绑定推广位的媒体id [ PidMediaIDBind(clt *core.SDKClient, mediaID uint64, pidList []string) (*PidMediaIDBindResult, error) ]
@@ -34,6 +35,12 @@
   - 多多进宝商品详情查询 [ GoodsDetail(clt *core.SDKClient, req *GoodsDetailRequest) ([]Goods, error) ]
   - 生成多多进宝频道推广 [ ResourceUrlGen(clt *core.SDKClient, req *ResourceUrlGenRequest) (*PromURL, error) ]
   - 创建多多礼金 [ CashgiftCreate(clt *core.SDKClient, req *CashgiftCreateRequest) (*CashgiftCreateResult, error) ]
+  - 多多进宝信息流渠道备案授权素材上传接口 [ GoodsPromotionRightAuth(clt *core.SDKClient, req *GoodsPromotionRightAuthRequest) error ]
+  - 多多客信息流投放备案图片上传接口 [ ReportImgUpload(clt *core.SDKClient, req *ReportImgUploadRequest) (string, error) ]
+  - 多多客信息流投放备案视频上传接口 [ ReportVideoUpload(clt *core.SDKClient, req *ReportVideoUploadRequest) (string, error) ]
+  - 多多客信息流投放备案视频上传分片初始化接口 [ ReportVideoUploadPartInit(clt *core.SDKClient, contentType string) (string, error) ]
+  - 多多客信息流投放备案视频上传分片上传接口 [ ReportVideoUploadPart(clt *core.SDKClient, req *ReportVideoUploadPartRequest) (string, error) ]
+  - 多多客信息流投放备案视频上传分片完成接口 [ ReportVideoUploadPartComplete(clt *core.SDKClient, uploadSign string) (string, error) ]
 - 多多客工具(api/ddk/oauth)
   - 查询所有授权的多多客订单 [ AllOrderListIncrementGet(clt *core.SDKClient, req *AllOrderListIncrementGetRequest, accessToken string) (int, []ddk.Order, error) ]
   - 创建多多礼金 [ CashgiftCreate(clt *core.SDKClient, req *CashgiftCreateRequest, accessToken string) (*ddk.CashgiftCreateResult, error) ]
@@ -51,6 +58,7 @@
   - 批量绑定推广位的媒体id [ PidMediaIDBind(clt *core.SDKClient, mediaID uint64, pidList []string, accessToken string) (*ddk.PidMediaIDBindResult, error) ]
   - 拼多多主站频道推广接口 [ ResourceUrlGen(clt *core.SDKClient, req *ResourceUrlGenRequest, accessToken string) (*ddk.PromURL, error) ]
   - 生成营销工具推广链接 [ RpPromUrlGenerate(clt *core.SDKClient, req *RpPromUrlGenerateRequest, accessToken string) (*ddk.RpPromUrlGenerateResult, error) ]
+  - 多多客生成单品推广小程序二维码url [ WeappQrcodeUrlGen(clt *core.SDKClient, req *WeappQrcodeUrlGenRequest, accessToken string) (string, error) ]
 - 商品API (api/goods)
   - 商品标准类目接口 [ CatsGet(clt *core.SDKClient, parentID uint64) ([]Cat, error) ]
   - 查询商品标签列表 [ OptGet(clt *core.SDKClient, parentID uint64) ([]Opt, error) ]
