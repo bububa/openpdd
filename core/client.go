@@ -3,7 +3,6 @@ package core
 import (
 	"bytes"
 	"encoding/base64"
-	"fmt"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -246,7 +245,6 @@ func (c *SDKClient) signUploadFields(fields []model.UploadField) string {
 	}
 	builder.WriteString(c.secret)
 	rawSign := builder.String()
-	fmt.Println(rawSign)
 	return strings.ToUpper(util.Md5String(rawSign))
 }
 
