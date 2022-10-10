@@ -24,7 +24,7 @@ type GoodsPromotionRightAuthRequest struct {
 	// PromotionStartTime 推广开始时间戳，毫秒
 	PromotionStartTime int64 `json:"promotion_start_time,omitempty"`
 	// ThumbPicURL 商品图片素材url列表，0到3张图
-	ThumbPicURL string `json:"thumb_pic_url,omitempty"`
+	ThumbPicURL []string `json:"thumb_pic_url,omitempty"`
 }
 
 // GetType implement Request interface
