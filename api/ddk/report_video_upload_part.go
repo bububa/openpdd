@@ -50,7 +50,7 @@ type ReportVideoUploadPartResponse struct {
 	model.CommonResponse
 	Response struct {
 		// UploadPartNum 表示本次成功上传的part number
-		UploadPartNum int `json:"upload_part_num,omitempty"`
+		UploadPartNum int `json:"uploaded_part_num,omitempty"`
 	} `json:"response"`
 }
 
