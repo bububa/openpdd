@@ -22,64 +22,42 @@ func ReportVideoUploadFearless(clt *core.SDKClient, req *ReportVideoUploadReques
 	if err != nil {
 		return "", err
 	}
+	if parallel <= 0 {
+		parallel = 1
+	}
 	var (
-		fr      = bufio.NewReader(req.File)
-		b       = make([]byte, chunkSize)
-		partNum int
+		fr        = bufio.NewReader(req.File)
+		b         = make([]byte, chunkSize)
+		wg        sync.WaitGroup
+		guard     = make(chan struct{}, parallel)
+		uploadErr = &atomic.Value{}
+		partNum   int
 	)
-	if parallel > 1 {
-		ch := make(chan *ReportVideoUploadPartRequest, parallel)
-		go func(ch chan<- *ReportVideoUploadPartRequest) {
-			for {
-				n, err := fr.Read(b)
-				if err != nil {
-					break
-				}
-				partNum++
-				buf := bytes.NewReader(b[0:n])
-				partReq := &ReportVideoUploadPartRequest{
-					PartFile:   buf,
-					PartNum:    partNum,
-					UploadSign: uploadSign,
-				}
-				ch <- partReq
-			}
-			close(ch)
-		}(ch)
-		uploadErr := &atomic.Value{}
-		var wg sync.WaitGroup
-		for req := range ch {
-			partReq := req
-			wg.Add(1)
-			go func(partReq *ReportVideoUploadPartRequest) {
-				defer wg.Done()
-				if _, err = ReportVideoUploadPart(clt, partReq); err != nil {
-					uploadErr.Store(err)
-				}
-
-			}(partReq)
+	for {
+		n, err := fr.Read(b)
+		if err != nil {
+			break
 		}
-		wg.Wait()
-		if err := uploadErr.Load(); err != nil {
-			return "", err.(error)
+		partNum++
+		buf := bytes.NewReader(b[0:n])
+		partReq := ReportVideoUploadPartRequest{
+			PartFile:   buf,
+			PartNum:    partNum,
+			UploadSign: uploadSign,
 		}
-	} else {
-		for {
-			n, err := fr.Read(b)
-			if err != nil {
-				break
-			}
-			partNum++
-			buf := bytes.NewReader(b[0:n])
-			partReq := ReportVideoUploadPartRequest{
-				PartFile:   buf,
-				PartNum:    partNum,
-				UploadSign: uploadSign,
-			}
+		guard <- struct{}{}
+		wg.Add(1)
+		go func(req *ReportVideoUploadPartRequest) {
+			defer wg.Done()
 			if _, err = ReportVideoUploadPart(clt, &partReq); err != nil {
-				return "", err
+				uploadErr.Store(err)
 			}
-		}
+			<-guard
+		}(&partReq)
+	}
+	wg.Wait()
+	if err := uploadErr.Load(); err != nil {
+		return "", err.(error)
 	}
 	return ReportVideoUploadPartComplete(clt, uploadSign)
 }
