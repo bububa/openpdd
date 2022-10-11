@@ -3,6 +3,8 @@ package ddk
 import (
 	"bufio"
 	"bytes"
+	"sync"
+	"sync/atomic"
 
 	"github.com/bububa/openpdd/core"
 )
@@ -21,26 +23,35 @@ func ReportVideoUploadFearless(clt *core.SDKClient, req *ReportVideoUploadReques
 		return "", err
 	}
 	var (
-		fr      = bufio.NewReader(req.File)
-		b       = make([]byte, chunkSize)
-		partNum int
+		fr        = bufio.NewReader(req.File)
+		b         = make([]byte, chunkSize)
+		partNum   int
+		uploadErr = &atomic.Value{}
+		wg        sync.WaitGroup
 	)
 	for {
 		n, err := fr.Read(b)
 		if err != nil {
 			break
 		}
+		partNum++
 		buf := bytes.NewReader(b[0:n])
 		partReq := ReportVideoUploadPartRequest{
 			PartFile:   buf,
 			PartNum:    partNum,
 			UploadSign: uploadSign,
 		}
-		partNum, err = ReportVideoUploadPart(clt, &partReq)
-		if err != nil {
-			return "", err
-		}
-		partNum++
+		wg.Add(1)
+		go func(req *ReportVideoUploadPartRequest) {
+			defer wg.Done()
+			if _, err = ReportVideoUploadPart(clt, req); err != nil {
+				uploadErr.Store(err)
+			}
+		}(&partReq)
+	}
+	wg.Wait()
+	if err := uploadErr.Load(); err != nil {
+		return "", err.(error)
 	}
 	return ReportVideoUploadPartComplete(clt, uploadSign)
 }
