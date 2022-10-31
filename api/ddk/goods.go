@@ -13,7 +13,7 @@ type Goods struct {
 	// CashGiftAmount 全局礼金金额，单位分
 	CashGiftAmount int64 `json:"cash_gift_amount,omitempty" xml:"cash_gift_amount,omitempty"`
 	// CatID 商品类目id
-	CatID model.FlexUint64 `json:"cat_id,omitempty" xml:"cat_id,omitempty"`
+	CatID model.Uint64 `json:"cat_id,omitempty" xml:"cat_id,omitempty"`
 	// CatIDs 商品一~四级类目ID列表
 	CatIDs []uint64 `json:"cat_ids,omitempty" xml:"cat_ids,omitempty"`
 	// CouponDiscount 优惠券面额,单位为分
@@ -67,13 +67,13 @@ type Goods struct {
 	// MarketFee 市场服务费
 	MarketFee int64 `json:"market_fee,omitempty" xml:"market_fee,omitempty"`
 	// MerchantType 商家类型
-	MerchatType int `json:"merchant_type,omitempty" xml:"merchant_type,omitempty"`
+	MerchatType model.Int `json:"merchant_type,omitempty" xml:"merchant_type,omitempty"`
 	// MinGroupPrice 最小成团价格，单位分
 	MinGroupPrice int64 `json:"min_group_price,omitempty" xml:"min_group_price,omitempty"`
 	// MinNormalPrice 最小单买价格，单位分
 	MinNormalPrice int64 `json:"min_normal_price,omitempty" xml:"min_normal_price,omitempty"`
 	// OptID 商品标签类目ID,使用pdd.goods.opt.get获取
-	OptID model.FlexUint64 `json:"opt_id,omitempty" xml:"opt_id,omitempty"`
+	OptID model.Uint64 `json:"opt_id,omitempty" xml:"opt_id,omitempty"`
 	// OptIDs 商品一~四级标签类目ID列表
 	OptIDs []uint64 `json:"opt_ids,omitempty" xml:"opt_ids,omitempty"`
 	// OptName 商品标签名
