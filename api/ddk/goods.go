@@ -4,6 +4,8 @@ import "github.com/bububa/openpdd/model"
 
 // Goods 多多进宝商品
 type Goods struct {
+	// CategoryName 类目名
+	CategoryName string `json:"category_name,omitempty" xml:"category_name,omitempty"`
 	// ActivityPromotionRate 活动佣金比例，千分比（特定活动期间的佣金比例）
 	ActivityPromotionRate int `json:"activity_promotion_rate,omitempty" xml:"activity_promotion_rate,omitempty"`
 	// ActivityTags 商品活动标记数组，例：[4,7]，4-秒杀 7-百亿补贴等
@@ -40,6 +42,10 @@ type Goods struct {
 	GoodsDesc string `json:"goods_desc,omitempty" xml:"goods_desc,omitempty"`
 	// GoodsImageURL 商品主图
 	GoodsImageURL string `json:"goods_image_url,omitempty" xml:"goods_image_url,omitempty"`
+	// GoodsGalleryURLs
+	GoodsGalleryURLs []string `json:"goods_gallery_urls,omitempty" xml:"goods_gallery_urls,omitempty"`
+	// VideoURLs 商品视频url
+	VideoURLs []string `json:"video_urls,omitempty" xml:"video_urls,omitempty"`
 	// GoodsLabels 商品特殊标签列表。例: [1]，1-APP专享
 	GoodsLabels []int `json:"goods_labels,omitempty" xml:"goods_labels,omitempty"`
 	// GoodsName 商品名称
