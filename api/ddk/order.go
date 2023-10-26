@@ -65,7 +65,7 @@ type Order struct {
 	// OrderVerifyTime 订单审核时间（UNIX时间戳）
 	OrderVerifyTime int64 `json:"order_verify_time,omitempty" xml:"order_verify_time,omitempty"`
 	// Pid 推广位id
-	Pid string `json:"pid,omitempty"`
+	Pid string `json:"p_id,omitempty"`
 	// PlatformDiscount 平台券金额，表示该订单使用的平台券金额，单位分
 	PlatformDiscount int64 `json:"platform_discount,omitempty" xml:"platform_discount,omitempty"`
 	// PointTime 打点时间
