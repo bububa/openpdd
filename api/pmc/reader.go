@@ -13,8 +13,14 @@ import (
 )
 
 // Read read pmc message
-func Read(ctx context.Context, clt *core.SDKClient) <-chan Command {
-	ch := make(chan Command)
+func Read(ctx context.Context, clt *core.SDKClient) <-chan struct {
+	Command
+	Conn net.Conn
+} {
+	ch := make(chan struct {
+		Command
+		Conn net.Conn
+	})
 	go func() {
 		defer close(ch)
 		conn, err := reconnect(ctx, clt)
@@ -34,7 +40,10 @@ func Read(ctx context.Context, clt *core.SDKClient) <-chan Command {
 				} else {
 					var cmd Command
 					if err := json.Unmarshal(payload, &cmd); err == nil {
-						ch <- cmd
+						ch <- struct {
+							Command
+							Conn net.Conn
+						}{Command: cmd, Conn: conn}
 					}
 				}
 			}

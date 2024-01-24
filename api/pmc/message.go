@@ -9,8 +9,10 @@ import (
 type CommandType string
 
 const (
-	CommandType_COMMON CommandType = "Common"
-	CommandType_FAIL   CommandType = "Fail"
+	CommandType_COMMON    CommandType = "Common"
+	CommandType_FAIL      CommandType = "Fail"
+	CommandType_HEARTBEAT CommandType = "HeartBeat"
+	CommandType_ACK       CommandType = "Ack"
 )
 
 type EventType string
@@ -57,6 +59,8 @@ type Message struct {
 	Type EventType `json:"type,omitempty"`
 	// Content
 	Content string `json:"content,omitempty"`
+	// MallID 商户ID
+	MallID int64 `json:"mallID,omitempty"`
 }
 
 // Event pmc event
@@ -81,4 +85,13 @@ type TradeModifiedEvent struct {
 // Type implement Event interface
 func (m TradeModifiedEvent) Type() EventType {
 	return EventType_TradeModifiedEvent
+}
+
+type AckMessage struct {
+	ID          uint64      `json:"id"`
+	CommandType CommandType `json:"commandType"`
+	Time        int64       `json:"time"`
+	SendTime    int64       `json:"sendTime"`
+	Type        EventType   `json:"type"`
+	MallID      int64       `json:"mallID"`
 }
