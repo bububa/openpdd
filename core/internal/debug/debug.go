@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -89,7 +88,7 @@ func DecodeJSONHttpResponse(r io.Reader, v interface{}, debug bool) error {
 	if !debug {
 		return json.NewDecoder(r).Decode(v)
 	}
-	body, err := ioutil.ReadAll(r)
+	body, err := io.ReadAll(r)
 	if err != nil {
 		return err
 	}
