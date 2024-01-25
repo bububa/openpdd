@@ -12,15 +12,22 @@ import (
 	"github.com/gobwas/ws/wsutil"
 )
 
-// Read read pmc message
-func Read(ctx context.Context, clt *core.SDKClient) <-chan Command {
-	ch := make(chan Command)
+func Read(ctx context.Context, clt *core.SDKClient) <-chan struct {
+	Command
+	HandleResult
+} {
+	ch := make(chan struct {
+		Command
+		HandleResult
+	})
+	conn, err := reconnect(ctx, clt)
+	if err != nil {
+		fmt.Println(err)
+	}
+	result := make(HandleResult)
+
 	go func() {
 		defer close(ch)
-		conn, err := reconnect(ctx, clt)
-		if err != nil {
-			return
-		}
 		for {
 			select {
 			case <-ctx.Done():
@@ -34,12 +41,38 @@ func Read(ctx context.Context, clt *core.SDKClient) <-chan Command {
 				} else {
 					var cmd Command
 					if err := json.Unmarshal(payload, &cmd); err == nil {
-						ch <- cmd
+						ch <- struct {
+							Command
+							HandleResult
+						}{Command: cmd, HandleResult: result}
+
+						select {
+						case err := <-result:
+							if err == nil {
+								err = NewAckMessage(cmd.ID, cmd.SendTime, cmd.Message.Type, cmd.Message.MallID).
+									sendAck(conn)
+							}
+							if err != nil {
+								fmt.Println(err)
+							}
+
+						}
 					}
 				}
 			}
 		}
 	}()
+
+	go func() {
+		interval := time.NewTicker(5 * time.Second)
+		for range interval.C {
+			err := NewHeartBeatMessage().sendHeartBeat(conn)
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
+	}()
+
 	return ch
 }
 

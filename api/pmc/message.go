@@ -4,13 +4,18 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/gobwas/ws/wsutil"
+	"net"
+	"time"
 )
 
 type CommandType string
 
 const (
-	CommandType_COMMON CommandType = "Common"
-	CommandType_FAIL   CommandType = "Fail"
+	CommandType_COMMON    CommandType = "Common"
+	CommandType_FAIL      CommandType = "Fail"
+	CommandType_HEARTBEAT CommandType = "HeartBeat"
+	CommandType_ACK       CommandType = "Ack"
 )
 
 type EventType string
@@ -57,6 +62,8 @@ type Message struct {
 	Type EventType `json:"type,omitempty"`
 	// Content
 	Content string `json:"content,omitempty"`
+	// MallID 商户ID
+	MallID int64 `json:"mallID,omitempty"`
 }
 
 // Event pmc event
@@ -82,3 +89,53 @@ type TradeModifiedEvent struct {
 func (m TradeModifiedEvent) Type() EventType {
 	return EventType_TradeModifiedEvent
 }
+
+type AckMessage struct {
+	ID          uint64      `json:"id"`
+	CommandType CommandType `json:"commandType"`
+	Time        int64       `json:"time"`
+	SendTime    int64       `json:"sendTime"`
+	Type        EventType   `json:"type"`
+	MallID      int64       `json:"mallID"`
+}
+
+func (ack AckMessage) sendAck(conn net.Conn) error {
+	data, err := json.Marshal(&ack)
+	if err != nil {
+		return err
+	}
+	return wsutil.WriteClientText(conn, data)
+}
+
+func NewAckMessage(id uint64, sendTime int64, eventType EventType, mallID int64) *AckMessage {
+	return &AckMessage{
+		ID:          id,
+		CommandType: CommandType_ACK,
+		Time:        time.Now().UnixMilli(),
+		SendTime:    sendTime,
+		Type:        eventType,
+		MallID:      mallID,
+	}
+}
+
+type HeartBeatMessage struct {
+	CommandType CommandType `json:"commandType"`
+	Time        int64       `json:"time"`
+}
+
+func (hb HeartBeatMessage) sendHeartBeat(conn net.Conn) error {
+	data, err := json.Marshal(&hb)
+	if err != nil {
+		return err
+	}
+	return wsutil.WriteClientText(conn, data)
+}
+
+func NewHeartBeatMessage() *HeartBeatMessage {
+	return &HeartBeatMessage{
+		CommandType: CommandType_HEARTBEAT,
+		Time:        time.Now().UnixMilli(),
+	}
+}
+
+type HandleResult chan error
