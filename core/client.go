@@ -2,7 +2,9 @@ package core
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
+	"encoding/json"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -10,6 +12,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/bububa/openpdd/core/internal/debug"
@@ -18,8 +21,29 @@ import (
 	"github.com/bububa/openpdd/util/query"
 )
 
+var (
+	onceInit   sync.Once
+	httpClient *http.Client
+)
+
+func defaultHttpClient() *http.Client {
+	onceInit.Do(func() {
+		transport := http.DefaultTransport.(*http.Transport).Clone()
+		transport.MaxIdleConns = 100
+		transport.MaxConnsPerHost = 100
+		transport.MaxIdleConnsPerHost = 100
+		httpClient = &http.Client{
+			Transport: transport,
+			Timeout:   time.Second * 60,
+		}
+	})
+	return httpClient
+}
+
 // SDKClient sdk client
 type SDKClient struct {
+	client   *http.Client
+	tracer   *Otel
 	clientID string
 	secret   string
 	dataType model.RequestDataType
@@ -36,12 +60,18 @@ func NewSDKClient(clientID string, secret string) *SDKClient {
 		gw:       GATEWAY,
 		uploadGw: UPLOAD_GATEWAY,
 		dataType: model.RequestDataType_JSON,
+		client:   defaultHttpClient(),
 	}
 }
 
 // SetDebug 设置debug模式
 func (c *SDKClient) SetDebug(debug bool) {
 	c.debug = debug
+}
+
+// SetHttpClient 设置http.Client
+func (c *SDKClient) SetHttpClient(client *http.Client) {
+	c.client = client
 }
 
 // SetGateway 设置gateway
@@ -58,12 +88,16 @@ func (c *SDKClient) SetDataType(t model.RequestDataType) {
 	c.dataType = t
 }
 
+func (c *SDKClient) WithTracer(namespace string) {
+	c.tracer = NewOtel(namespace, c.ClientID())
+}
+
 // ClientID returns client client_id
 func (c *SDKClient) ClientID() string {
 	return c.clientID
 }
 
-func (c *SDKClient) Do(req model.Request, resp model.Response, accessToken string) error {
+func (c *SDKClient) Do(ctx context.Context, req model.Request, resp model.Response, accessToken string) error {
 	values, err := query.Values(req)
 	if err != nil {
 		return err
@@ -76,10 +110,10 @@ func (c *SDKClient) Do(req model.Request, resp model.Response, accessToken strin
 		values.Set("access_token", accessToken)
 	}
 	values.Set("sign", c.sign(values))
-	return c.get(values, resp)
+	return c.get(ctx, req.GetType(), values, resp)
 }
 
-func (c *SDKClient) Upload(req model.UploadRequest, resp model.Response, accessToken string) error {
+func (c *SDKClient) Upload(ctx context.Context, req model.UploadRequest, resp model.Response, accessToken string) error {
 	fields := req.Encode()
 	fields = append(fields, []model.UploadField{
 		{
@@ -106,27 +140,28 @@ func (c *SDKClient) Upload(req model.UploadRequest, resp model.Response, accessT
 		Key:   "sign",
 		Value: c.signUploadFields(fields),
 	})
-	return c.upload(fields, resp)
+	return c.upload(ctx, req.GetType(), fields, resp)
 }
 
-func (c *SDKClient) post(req url.Values, resp model.Response) error {
+func (c *SDKClient) post(ctx context.Context, methodName string, req url.Values, resp model.Response) error {
+	payload := req.Encode()
 	var builder strings.Builder
 	builder.WriteString(c.gw)
 	if req != nil {
 		builder.WriteString("?")
-		builder.WriteString(req.Encode())
+		builder.WriteString(payload)
 	}
 	reqUrl := builder.String()
 	debug.PrintGetRequest(reqUrl, c.debug)
-	httpReq, err := http.NewRequest("POST", c.gw, strings.NewReader(req.Encode()))
+	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, c.gw, strings.NewReader(payload))
 	if err != nil {
 		return err
 	}
 	httpReq.Header.Add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8")
-	return c.fetch(httpReq, resp)
+	return c.WithSpan(ctx, methodName, httpReq, resp, []byte(payload), c.fetch)
 }
 
-func (c *SDKClient) get(req url.Values, resp model.Response) error {
+func (c *SDKClient) get(ctx context.Context, methodName string, req url.Values, resp model.Response) error {
 	var builder strings.Builder
 	builder.WriteString(c.gw)
 	if req != nil {
@@ -135,14 +170,14 @@ func (c *SDKClient) get(req url.Values, resp model.Response) error {
 	}
 	reqUrl := builder.String()
 	debug.PrintGetRequest(reqUrl, c.debug)
-	httpReq, err := http.NewRequest("GET", reqUrl, nil)
+	httpReq, err := http.NewRequestWithContext(ctx, http.MethodGet, reqUrl, nil)
 	if err != nil {
 		return err
 	}
-	return c.fetch(httpReq, resp)
+	return c.WithSpan(ctx, methodName, httpReq, resp, nil, c.fetch)
 }
 
-func (c *SDKClient) upload(req []model.UploadField, resp model.Response) error {
+func (c *SDKClient) upload(ctx context.Context, methodName string, req []model.UploadField, resp model.Response) error {
 	var buf bytes.Buffer
 	var builder strings.Builder
 	mw := multipart.NewWriter(&buf)
@@ -178,19 +213,20 @@ func (c *SDKClient) upload(req []model.UploadField, resp model.Response) error {
 	}
 	mw.Close()
 	debug.PrintPostMultipartRequest(c.uploadGw, mp, c.debug)
-	httpReq, err := http.NewRequest("POST", c.uploadGw, &buf)
+	httpReq, err := http.NewRequestWithContext(ctx, http.MethodPost, c.uploadGw, &buf)
 	if err != nil {
 		return err
 	}
 	httpReq.Header.Add("Content-Type", mw.FormDataContentType())
-	return c.fetch(httpReq, resp)
+	bs, _ := json.Marshal(mp)
+	return c.WithSpan(ctx, methodName, httpReq, resp, bs, c.fetch)
 }
 
 // fetch execute http request
-func (c *SDKClient) fetch(httpReq *http.Request, resp model.Response) error {
+func (c *SDKClient) fetch(httpReq *http.Request, resp model.Response) (*http.Response, error) {
 	httpResp, err := http.DefaultClient.Do(httpReq)
 	if err != nil {
-		return err
+		return httpResp, err
 	}
 	defer httpResp.Body.Close()
 	if resp == nil {
@@ -199,12 +235,12 @@ func (c *SDKClient) fetch(httpReq *http.Request, resp model.Response) error {
 	err = debug.DecodeJSONHttpResponse(httpResp.Body, resp, c.debug)
 	if err != nil {
 		debug.PrintError(err, c.debug)
-		return err
+		return httpResp, err
 	}
 	if resp.IsError() {
-		return resp.Error()
+		return httpResp, resp.Error()
 	}
-	return nil
+	return httpResp, nil
 }
 
 func (c *SDKClient) sign(values url.Values) string {
@@ -259,7 +295,6 @@ func (c *SDKClient) WSSUrl() string {
 	builder.WriteString("/")
 	builder.WriteString(c.signWSS(ts))
 	return builder.String()
-
 }
 
 func (c *SDKClient) signWSS(ts string) string {
@@ -268,4 +303,12 @@ func (c *SDKClient) signWSS(ts string) string {
 	builder.WriteString(ts)
 	builder.WriteString(c.secret)
 	return base64.StdEncoding.EncodeToString([]byte(util.Md5String(builder.String())))
+}
+
+func (c *SDKClient) WithSpan(ctx context.Context, methodName string, req *http.Request, resp model.Response, payload []byte, fn func(*http.Request, model.Response) (*http.Response, error)) error {
+	if c.tracer == nil {
+		_, err := fn(req, resp)
+		return err
+	}
+	return c.tracer.WithSpan(ctx, methodName, req, resp, payload, fn)
 }

@@ -3,6 +3,7 @@ package ddk
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"sync"
 	"sync/atomic"
 
@@ -12,13 +13,13 @@ import (
 // ReportVideoUploadFearless 多多客信息流投放备案视频上传接口
 // 多多客信息流投放备案视频上传,上传视频大小有限制,单个文件超过20M需要走分片上传
 // 根据上传文件大小自动选择API接口
-func ReportVideoUploadFearless(clt *core.SDKClient, req *ReportVideoUploadRequest, size int64, parallel int) (string, error) {
+func ReportVideoUploadFearless(ctx context.Context, clt *core.SDKClient, req *ReportVideoUploadRequest, size int64, parallel int) (string, error) {
 	var maxSize int64 = 20 * 1 << 20
 	var chunkSize int64 = 5 * 1 << 20
 	if size <= maxSize {
-		return ReportVideoUpload(clt, req)
+		return ReportVideoUpload(ctx, clt, req)
 	}
-	uploadSign, err := ReportVideoUploadPartInit(clt, "video/mp4")
+	uploadSign, err := ReportVideoUploadPartInit(ctx, clt, "video/mp4")
 	if err != nil {
 		return "", err
 	}
@@ -49,7 +50,7 @@ func ReportVideoUploadFearless(clt *core.SDKClient, req *ReportVideoUploadReques
 		wg.Add(1)
 		go func(req *ReportVideoUploadPartRequest) {
 			defer wg.Done()
-			if _, err = ReportVideoUploadPart(clt, &partReq); err != nil {
+			if _, err = ReportVideoUploadPart(ctx, clt, &partReq); err != nil {
 				uploadErr.Store(err)
 			}
 			<-guard
@@ -59,5 +60,5 @@ func ReportVideoUploadFearless(clt *core.SDKClient, req *ReportVideoUploadReques
 	if err := uploadErr.Load(); err != nil {
 		return "", err.(error)
 	}
-	return ReportVideoUploadPartComplete(clt, uploadSign)
+	return ReportVideoUploadPartComplete(ctx, clt, uploadSign)
 }

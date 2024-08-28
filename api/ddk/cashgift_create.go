@@ -1,6 +1,8 @@
 package ddk
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -76,9 +78,9 @@ type CashgiftCreateResult struct {
 }
 
 // CashgiftCreate 创建多多礼金
-func CashgiftCreate(clt *core.SDKClient, req *CashgiftCreateRequest) (*CashgiftCreateResult, error) {
+func CashgiftCreate(ctx context.Context, clt *core.SDKClient, req *CashgiftCreateRequest) (*CashgiftCreateResult, error) {
 	var resp CashgiftCreateResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response, nil

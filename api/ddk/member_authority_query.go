@@ -1,6 +1,8 @@
 package ddk
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -29,9 +31,9 @@ type MemberAuthorityQueryResponse struct {
 }
 
 // MemberAuthorityQuery 查询是否绑定备案
-func MemberAuthorityQuery(clt *core.SDKClient, req *MemberAuthorityQueryRequest) (bool, error) {
+func MemberAuthorityQuery(ctx context.Context, clt *core.SDKClient, req *MemberAuthorityQueryRequest) (bool, error) {
 	var resp MemberAuthorityQueryResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return false, err
 	}
 	return resp.Response.Bind == 1, nil

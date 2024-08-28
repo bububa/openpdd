@@ -1,6 +1,8 @@
 package ddk
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -35,9 +37,9 @@ type ReportVideoUploadPartInitResponse struct {
 }
 
 // ReportVidoeUploadPartInit 多多客信息流投放备案视频上传分片初始化接口
-func ReportVideoUploadPartInit(clt *core.SDKClient, contentType string) (string, error) {
+func ReportVideoUploadPartInit(ctx context.Context, clt *core.SDKClient, contentType string) (string, error) {
 	var resp ReportVideoUploadPartInitResponse
-	if err := clt.Upload(&ReportVideoUploadPartInitRequest{
+	if err := clt.Upload(ctx, &ReportVideoUploadPartInitRequest{
 		ContentType: contentType,
 	}, &resp, ""); err != nil {
 		return "", err

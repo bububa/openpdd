@@ -1,6 +1,8 @@
 package ddk
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -56,9 +58,9 @@ type GoodsPromotionUrlGenerateResponse struct {
 }
 
 // GoodsPromotionUrlGenerate 多多进宝推广链接生成
-func GoodsPromotionUrlGenerate(clt *core.SDKClient, req *GoodsPromotionUrlGenerateRequest) ([]PromURL, error) {
+func GoodsPromotionUrlGenerate(ctx context.Context, clt *core.SDKClient, req *GoodsPromotionUrlGenerateRequest) ([]PromURL, error) {
 	var resp GoodsPromotionUrlGenerateResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response.List, nil

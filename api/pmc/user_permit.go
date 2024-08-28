@@ -1,6 +1,7 @@
 package pmc
 
 import (
+	"context"
 	"strings"
 
 	"github.com/bububa/openpdd/core"
@@ -28,13 +29,13 @@ type UserPermitResponse struct {
 }
 
 // UserPermit 为已授权的用户开通消息服务
-func UserPermit(clt *core.SDKClient, topics []string, accessToken string) (bool, error) {
+func UserPermit(ctx context.Context, clt *core.SDKClient, topics []string, accessToken string) (bool, error) {
 	var req UserPermitRequest
 	if len(topics) > 0 {
 		req.Topics = strings.Join(topics, ",")
 	}
 	var resp UserPermitResponse
-	if err := clt.Do(&req, &resp, accessToken); err != nil {
+	if err := clt.Do(ctx, &req, &resp, accessToken); err != nil {
 		return false, err
 	}
 	return resp.Response.IsSuccess, nil

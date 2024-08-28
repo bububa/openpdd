@@ -1,6 +1,8 @@
 package ddk
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -34,9 +36,9 @@ type GoodsPidQueryResponse struct {
 }
 
 // GoodsPidQuery 查询已经生成的推广位信息
-func GoodsPidQuery(clt *core.SDKClient, req *GoodsPidQueryRequest) (int, []Pid, error) {
+func GoodsPidQuery(ctx context.Context, clt *core.SDKClient, req *GoodsPidQueryRequest) (int, []Pid, error) {
 	var resp GoodsPidQueryResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return 0, nil, err
 	}
 	return resp.Response.TotalCount, resp.Response.List, nil

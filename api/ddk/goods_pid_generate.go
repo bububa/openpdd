@@ -1,6 +1,8 @@
 package ddk
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -31,9 +33,9 @@ type GoodsPidGenerateResponse struct {
 }
 
 // GoodsPidGenerate 创建多多进宝推广位
-func GoodsPidGenerate(clt *core.SDKClient, req *GoodsPidGenerateRequest) ([]Pid, error) {
+func GoodsPidGenerate(ctx context.Context, clt *core.SDKClient, req *GoodsPidGenerateRequest) ([]Pid, error) {
 	var resp GoodsPidGenerateResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response.List, nil

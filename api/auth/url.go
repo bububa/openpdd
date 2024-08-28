@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"context"
 	"net/url"
 	"strings"
 
@@ -20,7 +21,7 @@ type URLRequest struct {
 }
 
 // URL 组装授权页URL
-func URL(clt *core.SDKClient, req *URLRequest) string {
+func URL(ctx context.Context, clt *core.SDKClient, req *URLRequest) string {
 	var builder strings.Builder
 	switch req.AuthType {
 	case AuthType_SHOP_WEB:

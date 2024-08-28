@@ -1,6 +1,8 @@
 package ddk
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -38,9 +40,9 @@ type OrderListRangeGetResponse struct {
 }
 
 // OrderListRangeGet 用时间段查询推广订单接口
-func OrderListRangeGet(clt *core.SDKClient, req *OrderListRangeGetRequest) (string, []Order, error) {
+func OrderListRangeGet(ctx context.Context, clt *core.SDKClient, req *OrderListRangeGetRequest) (string, []Order, error) {
 	var resp OrderListRangeGetResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return "", nil, err
 	}
 	return resp.Response.LastOrderID, resp.Response.OrderList, nil

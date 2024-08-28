@@ -1,6 +1,8 @@
 package oauth
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/api/ddk"
 	"github.com/bububa/openpdd/core"
 )
@@ -18,9 +20,9 @@ func (r GoodsPromotionUrlGenerateRequest) GetType() string {
 }
 
 // GoodsPromotionUrlGenerate 多多进宝推广链接生成
-func GoodsPromotionUrlGenerate(clt *core.SDKClient, req *GoodsPromotionUrlGenerateRequest, accessToken string) ([]ddk.PromURL, error) {
+func GoodsPromotionUrlGenerate(ctx context.Context, clt *core.SDKClient, req *GoodsPromotionUrlGenerateRequest, accessToken string) ([]ddk.PromURL, error) {
 	var resp ddk.GoodsPromotionUrlGenerateResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(ctx, req, &resp, accessToken); err != nil {
 		return nil, err
 	}
 	return resp.Response.List, nil

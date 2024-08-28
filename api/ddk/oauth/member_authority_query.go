@@ -1,6 +1,8 @@
 package oauth
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/api/ddk"
 	"github.com/bububa/openpdd/core"
 )
@@ -16,9 +18,9 @@ func (r MemberAuthorityQueryRequest) GetType() string {
 }
 
 // MemberAuthorityQuery 查询是否绑定备案
-func MemberAuthorityQuery(clt *core.SDKClient, req *MemberAuthorityQueryRequest, accessToken string) (bool, error) {
+func MemberAuthorityQuery(ctx context.Context, clt *core.SDKClient, req *MemberAuthorityQueryRequest, accessToken string) (bool, error) {
 	var resp ddk.MemberAuthorityQueryResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(ctx, req, &resp, accessToken); err != nil {
 		return false, err
 	}
 	return resp.Response.Bind == 1, nil

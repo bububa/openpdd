@@ -1,6 +1,8 @@
 package oauth
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/api/ddk"
 	"github.com/bububa/openpdd/core"
 )
@@ -16,9 +18,9 @@ func (r OrderDetailGetRequest) GetType() string {
 }
 
 // OrderDetailGet 查询订单详情
-func OrderDetailGet(clt *core.SDKClient, req *OrderDetailGetRequest, accessToken string) (*ddk.Order, error) {
+func OrderDetailGet(ctx context.Context, clt *core.SDKClient, req *OrderDetailGetRequest, accessToken string) (*ddk.Order, error) {
 	var resp ddk.OrderDetailGetResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(ctx, req, &resp, accessToken); err != nil {
 		return nil, err
 	}
 	return resp.Response, nil

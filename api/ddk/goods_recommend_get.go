@@ -1,6 +1,8 @@
 package ddk
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -53,9 +55,9 @@ type GoodsRecommendGetResult struct {
 }
 
 // GoodsRecommendGet 多多进宝商品推荐API
-func GoodsRecommendGet(clt *core.SDKClient, req *GoodsRecommendGetRequest) (*GoodsRecommendGetResult, error) {
+func GoodsRecommendGet(ctx context.Context, clt *core.SDKClient, req *GoodsRecommendGetRequest) (*GoodsRecommendGetResult, error) {
 	var resp GoodsRecommendGetResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response, nil

@@ -1,6 +1,8 @@
 package ddk
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -28,9 +30,9 @@ type GoodsZsUnitUrlGenResponse struct {
 }
 
 // GoodsZsUnitUrlGen 多多进宝转链接口
-func GoodsZsUnitUrlGen(clt *core.SDKClient, req *GoodsZsUnitUrlGenRequest) (*PromURL, error) {
+func GoodsZsUnitUrlGen(ctx context.Context, clt *core.SDKClient, req *GoodsZsUnitUrlGenRequest) (*PromURL, error) {
 	var resp GoodsZsUnitUrlGenResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response, nil

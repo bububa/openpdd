@@ -1,6 +1,8 @@
 package ddk
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -33,9 +35,9 @@ type ResourceUrlGenResponse struct {
 }
 
 // ResourceUrlGen 生成多多进宝频道推广
-func ResourceUrlGen(clt *core.SDKClient, req *ResourceUrlGenRequest) (*PromURL, error) {
+func ResourceUrlGen(ctx context.Context, clt *core.SDKClient, req *ResourceUrlGenRequest) (*PromURL, error) {
 	var resp ResourceUrlGenResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response, nil

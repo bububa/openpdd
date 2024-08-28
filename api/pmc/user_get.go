@@ -1,6 +1,8 @@
 package pmc
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -40,12 +42,12 @@ type User struct {
 }
 
 // UserGet 获取用户已开通消息
-func UserGet(clt *core.SDKClient, ownerID string) (*User, error) {
+func UserGet(ctx context.Context, clt *core.SDKClient, ownerID string) (*User, error) {
 	req := UserGetRequest{
 		OwnerID: ownerID,
 	}
 	var resp UserGetResponse
-	if err := clt.Do(&req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, &req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response.User, nil

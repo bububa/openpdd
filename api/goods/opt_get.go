@@ -1,6 +1,8 @@
 package goods
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -25,12 +27,12 @@ type OptGetResponse struct {
 }
 
 // OptGet 查询商品标签列表
-func OptGet(clt *core.SDKClient, parentID uint64) ([]Opt, error) {
+func OptGet(ctx context.Context, clt *core.SDKClient, parentID uint64) ([]Opt, error) {
 	req := OptGetRequest{
 		ParentCatID: parentID,
 	}
 	var resp OptGetResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response.List, nil

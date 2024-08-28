@@ -1,6 +1,8 @@
 package ddk
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -25,9 +27,9 @@ type OrderDetailGetResponse struct {
 }
 
 // OrderDetailGet 查询订单详情
-func OrderDetailGet(clt *core.SDKClient, req *OrderDetailGetRequest) (*Order, error) {
+func OrderDetailGet(ctx context.Context, clt *core.SDKClient, req *OrderDetailGetRequest) (*Order, error) {
 	var resp OrderDetailGetResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response, nil
