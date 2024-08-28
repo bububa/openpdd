@@ -1,6 +1,7 @@
 package ddk
 
 import (
+	"context"
 	"io"
 
 	"github.com/bububa/openpdd/core"
@@ -41,9 +42,9 @@ type ReportImgUploadResponse struct {
 }
 
 // ReportImgUpload 多多进宝信息流渠道备案授权素材上传接口
-func ReportImgUpload(clt *core.SDKClient, req *ReportImgUploadRequest) (string, error) {
+func ReportImgUpload(ctx context.Context, clt *core.SDKClient, req *ReportImgUploadRequest) (string, error) {
 	var resp ReportImgUploadResponse
-	if err := clt.Upload(req, &resp, ""); err != nil {
+	if err := clt.Upload(ctx, req, &resp, ""); err != nil {
 		return "", err
 	}
 	return resp.Response.URL, nil

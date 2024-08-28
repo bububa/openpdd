@@ -1,6 +1,8 @@
 package ddk
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -38,9 +40,9 @@ type GoodsDetailResponse struct {
 }
 
 // GoodsDetail 多多进宝商品详情查询
-func GoodsDetail(clt *core.SDKClient, req *GoodsDetailRequest) ([]Goods, error) {
+func GoodsDetail(ctx context.Context, clt *core.SDKClient, req *GoodsDetailRequest) ([]Goods, error) {
 	var resp GoodsDetailResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response.List, nil

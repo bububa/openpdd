@@ -1,6 +1,8 @@
 package oauth
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/api/ddk"
 	"github.com/bububa/openpdd/core"
 )
@@ -16,7 +18,7 @@ func (r PidMediaIDBindRequest) GetType() string {
 }
 
 // PidMediaIDBind 批量绑定推广位的媒体id
-func PidMediaIDBind(clt *core.SDKClient, mediaID uint64, pidList []string, accessToken string) (*ddk.PidMediaIDBindResult, error) {
+func PidMediaIDBind(ctx context.Context, clt *core.SDKClient, mediaID uint64, pidList []string, accessToken string) (*ddk.PidMediaIDBindResult, error) {
 	var (
 		req = &PidMediaIDBindRequest{
 			PidMediaIDBindRequest: ddk.PidMediaIDBindRequest{
@@ -26,7 +28,7 @@ func PidMediaIDBind(clt *core.SDKClient, mediaID uint64, pidList []string, acces
 		}
 		resp ddk.PidMediaIDBindResponse
 	)
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(ctx, req, &resp, accessToken); err != nil {
 		return nil, err
 	}
 	return resp.Response.Result, nil

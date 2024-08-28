@@ -1,6 +1,8 @@
 package pmc
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -23,9 +25,9 @@ type AccrueQueryResponse struct {
 }
 
 // AccrueQuery 消息队列积压数量查询
-func AccureQuery(clt *core.SDKClient) (int64, error) {
+func AccureQuery(ctx context.Context, clt *core.SDKClient) (int64, error) {
 	var resp AccrueQueryResponse
-	if err := clt.Do(&AccrueQueryRequest{}, &resp, ""); err != nil {
+	if err := clt.Do(ctx, &AccrueQueryRequest{}, &resp, ""); err != nil {
 		return 0, err
 	}
 	return resp.Response.Number, nil

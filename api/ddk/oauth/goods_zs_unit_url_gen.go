@@ -1,6 +1,8 @@
 package oauth
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/api/ddk"
 	"github.com/bububa/openpdd/core"
 )
@@ -18,9 +20,9 @@ func (r GoodsZsUnitUrlGenRequest) GetType() string {
 }
 
 // GoodsZsUnitUrlGen 多多进宝转链接口
-func GoodsZsUnitUrlGen(clt *core.SDKClient, req *GoodsZsUnitUrlGenRequest, accessToken string) (*ddk.PromURL, error) {
+func GoodsZsUnitUrlGen(ctx context.Context, clt *core.SDKClient, req *GoodsZsUnitUrlGenRequest, accessToken string) (*ddk.PromURL, error) {
 	var resp ddk.GoodsZsUnitUrlGenResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(ctx, req, &resp, accessToken); err != nil {
 		return nil, err
 	}
 	return resp.Response, nil

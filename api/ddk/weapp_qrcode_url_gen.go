@@ -1,6 +1,8 @@
 package ddk
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -36,9 +38,9 @@ type WeappQrcodeUrlGenResponse struct {
 }
 
 // WeappQrcodeUrlGen 多多客生成单品推广小程序二维码url
-func WeappQrcodeUrlGen(clt *core.SDKClient, req *WeappQrcodeUrlGenRequest) (string, error) {
+func WeappQrcodeUrlGen(ctx context.Context, clt *core.SDKClient, req *WeappQrcodeUrlGenRequest) (string, error) {
 	var resp WeappQrcodeUrlGenResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return "", err
 	}
 	return resp.Response.URL, nil

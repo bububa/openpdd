@@ -1,6 +1,8 @@
 package ddk
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -71,9 +73,9 @@ type RpPromUrlGenerateResult struct {
 }
 
 // RpPromUrlGenerate 生成营销工具推广链接
-func RpPromUrlGenerate(clt *core.SDKClient, req *RpPromUrlGenerateRequest) (*RpPromUrlGenerateResult, error) {
+func RpPromUrlGenerate(ctx context.Context, clt *core.SDKClient, req *RpPromUrlGenerateRequest) (*RpPromUrlGenerateResult, error) {
 	var resp RpPromUrlGenerateResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response, nil

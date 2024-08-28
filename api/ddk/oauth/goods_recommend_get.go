@@ -1,6 +1,8 @@
 package oauth
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/api/ddk"
 	"github.com/bububa/openpdd/core"
 )
@@ -18,9 +20,9 @@ func (r GoodsRecommendGetRequest) GetType() string {
 }
 
 // GoodsRecommendGet 多多进宝商品推荐API
-func GoodsRecommendGet(clt *core.SDKClient, req *GoodsRecommendGetRequest, accessToken string) (*ddk.GoodsRecommendGetResult, error) {
+func GoodsRecommendGet(ctx context.Context, clt *core.SDKClient, req *GoodsRecommendGetRequest, accessToken string) (*ddk.GoodsRecommendGetResult, error) {
 	var resp ddk.GoodsRecommendGetResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(ctx, req, &resp, accessToken); err != nil {
 		return nil, err
 	}
 	return resp.Response, nil

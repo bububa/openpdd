@@ -1,6 +1,8 @@
 package oauth
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/api/ddk"
 	"github.com/bububa/openpdd/core"
 )
@@ -16,9 +18,9 @@ func (r CashgiftStatusUpdateRequest) GetType() string {
 }
 
 // CashgiftStatusUpdate 多多礼金状态更新
-func CashgiftStatusUpdate(clt *core.SDKClient, req *CashgiftStatusUpdateRequest, accessToken string) (uint64, error) {
+func CashgiftStatusUpdate(ctx context.Context, clt *core.SDKClient, req *CashgiftStatusUpdateRequest, accessToken string) (uint64, error) {
 	var resp ddk.CashgiftStatusUpdateResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(ctx, req, &resp, accessToken); err != nil {
 		return 0, err
 	}
 	return resp.Response.ID, nil

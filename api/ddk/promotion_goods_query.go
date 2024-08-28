@@ -1,6 +1,8 @@
 package ddk
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -60,9 +62,9 @@ type PromotionGoodsApplication struct {
 }
 
 // PromotionGoodsQuery 多多进宝信息流投放商品报备进度查询
-func PromotionGoodsQuery(clt *core.SDKClient, req *PromotionGoodsQueryRequest) (int, []PromotionGoodsApplication, error) {
+func PromotionGoodsQuery(ctx context.Context, clt *core.SDKClient, req *PromotionGoodsQueryRequest) (int, []PromotionGoodsApplication, error) {
 	var resp PromotionGoodsQueryResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return 0, nil, err
 	}
 	return resp.Response.Total, resp.Response.List, nil

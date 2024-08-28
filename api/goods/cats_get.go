@@ -1,6 +1,8 @@
 package goods
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -25,12 +27,12 @@ type CatsGetResponse struct {
 }
 
 // CatsGet 商品标准类目接口
-func CatsGet(clt *core.SDKClient, parentID uint64) ([]Cat, error) {
+func CatsGet(ctx context.Context, clt *core.SDKClient, parentID uint64) ([]Cat, error) {
 	req := CatsGetRequest{
 		ParentCatID: parentID,
 	}
 	var resp CatsGetResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response.List, nil

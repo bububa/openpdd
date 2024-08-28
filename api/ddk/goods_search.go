@@ -1,6 +1,8 @@
 package ddk
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -73,9 +75,9 @@ type GoodsSearchResult struct {
 }
 
 // GoodsSearch 多多进宝商品查询
-func GoodsSearch(clt *core.SDKClient, req *GoodsSearchRequest) (*GoodsSearchResult, error) {
+func GoodsSearch(ctx context.Context, clt *core.SDKClient, req *GoodsSearchRequest) (*GoodsSearchResult, error) {
 	var resp GoodsSearchResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Response, nil

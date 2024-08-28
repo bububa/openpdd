@@ -1,6 +1,8 @@
 package oauth
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/api/ddk"
 	"github.com/bububa/openpdd/core"
 )
@@ -16,9 +18,9 @@ func (r ResourceUrlGenRequest) GetType() string {
 }
 
 // ResourceUrlGen 生成多多进宝频道推广
-func ResourceUrlGen(clt *core.SDKClient, req *ResourceUrlGenRequest, accessToken string) (*ddk.PromURL, error) {
+func ResourceUrlGen(ctx context.Context, clt *core.SDKClient, req *ResourceUrlGenRequest, accessToken string) (*ddk.PromURL, error) {
 	var resp ddk.ResourceUrlGenResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(ctx, req, &resp, accessToken); err != nil {
 		return nil, err
 	}
 	return resp.Response, nil

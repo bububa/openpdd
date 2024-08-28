@@ -1,6 +1,8 @@
 package pmc
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -26,12 +28,12 @@ type UserCancelResponse struct {
 }
 
 // UserCancel 取消用户的消息服务
-func UserCancel(clt *core.SDKClient, ownerID string) (bool, error) {
+func UserCancel(ctx context.Context, clt *core.SDKClient, ownerID string) (bool, error) {
 	req := UserCancelRequest{
 		OwnerID: ownerID,
 	}
 	var resp UserCancelResponse
-	if err := clt.Do(&req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, &req, &resp, ""); err != nil {
 		return false, err
 	}
 	return resp.Response.IsSuccess, nil

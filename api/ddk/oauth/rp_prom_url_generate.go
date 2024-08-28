@@ -1,6 +1,8 @@
 package oauth
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/api/ddk"
 	"github.com/bububa/openpdd/core"
 )
@@ -16,9 +18,9 @@ func (r RpPromUrlGenerateRequest) GetType() string {
 }
 
 // RpPromUrlGenerate 生成营销工具推广链接
-func RpPromUrlGenerate(clt *core.SDKClient, req *RpPromUrlGenerateRequest, accessToken string) (*ddk.RpPromUrlGenerateResult, error) {
+func RpPromUrlGenerate(ctx context.Context, clt *core.SDKClient, req *RpPromUrlGenerateRequest, accessToken string) (*ddk.RpPromUrlGenerateResult, error) {
 	var resp ddk.RpPromUrlGenerateResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(ctx, req, &resp, accessToken); err != nil {
 		return nil, err
 	}
 	return resp.Response, nil

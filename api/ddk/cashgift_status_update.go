@@ -1,6 +1,8 @@
 package ddk
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -28,9 +30,9 @@ type CashgiftStatusUpdateResponse struct {
 }
 
 // CashgiftStatusUpdate 多多礼金状态更新
-func CashgiftStatusUpdate(clt *core.SDKClient, req *CashgiftStatusUpdateRequest) (uint64, error) {
+func CashgiftStatusUpdate(ctx context.Context, clt *core.SDKClient, req *CashgiftStatusUpdateRequest) (uint64, error) {
 	var resp CashgiftStatusUpdateResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return 0, err
 	}
 	return resp.Response.ID, nil

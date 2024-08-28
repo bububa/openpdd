@@ -1,6 +1,8 @@
 package oauth
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/api/ddk"
 	"github.com/bububa/openpdd/core"
 )
@@ -16,9 +18,9 @@ func (r WeappQrcodeUrlGenRequest) GetType() string {
 }
 
 // WeappQrcodeUrlGen 多多客生成单品推广小程序二维码url
-func WeappQrcodeUrlGen(clt *core.SDKClient, req *WeappQrcodeUrlGenRequest, accessToken string) (string, error) {
+func WeappQrcodeUrlGen(ctx context.Context, clt *core.SDKClient, req *WeappQrcodeUrlGenRequest, accessToken string) (string, error) {
 	var resp ddk.WeappQrcodeUrlGenResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(ctx, req, &resp, accessToken); err != nil {
 		return "", err
 	}
 	return resp.Response.URL, nil

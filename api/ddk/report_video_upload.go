@@ -1,6 +1,7 @@
 package ddk
 
 import (
+	"context"
 	"io"
 
 	"github.com/bububa/openpdd/core"
@@ -42,9 +43,9 @@ type ReportVideoUploadResponse struct {
 
 // ReportVideoUpload 多多客信息流投放备案视频上传接口
 // 多多客信息流投放备案视频上传,上传视频大小有限制,单个文件超过20M需要走分片上传
-func ReportVideoUpload(clt *core.SDKClient, req *ReportVideoUploadRequest) (string, error) {
+func ReportVideoUpload(ctx context.Context, clt *core.SDKClient, req *ReportVideoUploadRequest) (string, error) {
 	var resp ReportVideoUploadResponse
-	if err := clt.Upload(req, &resp, ""); err != nil {
+	if err := clt.Upload(ctx, req, &resp, ""); err != nil {
 		return "", err
 	}
 	return resp.Response.URL, nil

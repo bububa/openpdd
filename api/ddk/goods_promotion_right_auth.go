@@ -1,6 +1,7 @@
 package ddk
 
 import (
+	"context"
 	"errors"
 
 	"github.com/bububa/openpdd/core"
@@ -44,9 +45,9 @@ type GoodsPromotionRightAuthResponse struct {
 }
 
 // GoodsPromotionRightAuth 多多进宝信息流渠道备案授权素材上传接口
-func GoodsPromotionRightAuth(clt *core.SDKClient, req *GoodsPromotionRightAuthRequest) error {
+func GoodsPromotionRightAuth(ctx context.Context, clt *core.SDKClient, req *GoodsPromotionRightAuthRequest) error {
 	var resp GoodsPromotionRightAuthResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return err
 	}
 	if !resp.Response.Result {

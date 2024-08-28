@@ -1,6 +1,8 @@
 package oauth
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/api/ddk"
 	"github.com/bububa/openpdd/core"
 )
@@ -16,9 +18,9 @@ func (r GoodsPidGenerateRequest) GetType() string {
 }
 
 // GoodsPidGenerate 创建多多进宝推广位
-func GoodsPidGenerate(clt *core.SDKClient, req *GoodsPidGenerateRequest, accessToken string) ([]ddk.Pid, error) {
+func GoodsPidGenerate(ctx context.Context, clt *core.SDKClient, req *GoodsPidGenerateRequest, accessToken string) ([]ddk.Pid, error) {
 	var resp ddk.GoodsPidGenerateResponse
-	if err := clt.Do(req, &resp, accessToken); err != nil {
+	if err := clt.Do(ctx, req, &resp, accessToken); err != nil {
 		return nil, err
 	}
 	return resp.Response.List, nil

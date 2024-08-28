@@ -1,6 +1,8 @@
 package ddk
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -21,9 +23,9 @@ type CmsPromUrlGenerateRequest struct {
 	GenerateWeApp bool `json:"generate_we_app,omitempty"`
 	// Keyword 搜索关键词
 	Keyword string `json:"keyword,omitempty"`
-	//单人团多人团标志。true-多人团，false-单人团 默认false
+	// 单人团多人团标志。true-多人团，false-单人团 默认false
 	MultiGroup bool `json:"multi_group,omitempty"`
-	//推广位列表，例如：["60005_612"]
+	// 推广位列表，例如：["60005_612"]
 	PidList string `json:"p_id_list,omitempty"`
 }
 
@@ -45,9 +47,9 @@ type CmsPromUrlGenerateResponse struct {
 }
 
 // CmsPromUrlGenerate 生成商城-频道推广链接
-func CmsPromUrlGenerate(clt *core.SDKClient, req *CmsPromUrlGenerateRequest) (int, []PromURL, error) {
+func CmsPromUrlGenerate(ctx context.Context, clt *core.SDKClient, req *CmsPromUrlGenerateRequest) (int, []PromURL, error) {
 	var resp CmsPromUrlGenerateResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return 0, nil, err
 	}
 	return resp.Response.Total, resp.Response.URLList, nil

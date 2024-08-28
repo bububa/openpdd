@@ -1,6 +1,7 @@
 package ddk
 
 import (
+	"context"
 	"io"
 	"strconv"
 
@@ -55,9 +56,9 @@ type ReportVideoUploadPartResponse struct {
 }
 
 // ReportVidoeUploadPart 多多客信息流投放备案视频上传分片上传接口
-func ReportVideoUploadPart(clt *core.SDKClient, req *ReportVideoUploadPartRequest) (int, error) {
+func ReportVideoUploadPart(ctx context.Context, clt *core.SDKClient, req *ReportVideoUploadPartRequest) (int, error) {
 	var resp ReportVideoUploadPartResponse
-	if err := clt.Upload(req, &resp, ""); err != nil {
+	if err := clt.Upload(ctx, req, &resp, ""); err != nil {
 		return 0, err
 	}
 	return resp.Response.UploadPartNum, nil

@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"context"
+
 	"github.com/bububa/openpdd/core"
 	"github.com/bububa/openpdd/model"
 )
@@ -23,12 +25,12 @@ type TokenRefreshResponse struct {
 }
 
 // TokenRefresh 刷新Access Token
-func TokenRefresh(clt *core.SDKClient, refreshToken string) (*Token, error) {
+func TokenRefresh(ctx context.Context, clt *core.SDKClient, refreshToken string) (*Token, error) {
 	req := &TokenRefreshRequest{
 		RefreshToken: refreshToken,
 	}
 	var resp TokenRefreshResponse
-	if err := clt.Do(req, &resp, ""); err != nil {
+	if err := clt.Do(ctx, req, &resp, ""); err != nil {
 		return nil, err
 	}
 	return resp.Data, nil
