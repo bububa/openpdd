@@ -76,7 +76,7 @@ func (o *Otel) WithSpan(ctx context.Context, methodName string, req *http.Reques
 		attrs = append(attrs, attribute.String("payload", string(payload)))
 	}
 
-	_, span := o.tracer.Start(ctx, fmt.Sprintf("http.", req.Method),
+	_, span := o.tracer.Start(ctx, fmt.Sprintf("http.%s", req.Method),
 		trace.WithSpanKind(trace.SpanKindClient),
 		trace.WithAttributes(attrs...),
 	)
